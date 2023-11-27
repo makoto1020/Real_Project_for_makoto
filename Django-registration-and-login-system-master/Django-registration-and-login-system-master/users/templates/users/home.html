@@ -1,0 +1,72 @@
+
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% block content %}
+
+    <div class="jumbotron">
+        <h1 class="display-4">安安, {{user.username.title|default:'Guest'}}</h1>
+        <p class="lead">
+            早安 <b>紅成又在搞鬼</b> 這個網站不是紅成又做的
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+        <div id="loading-screen">
+            <div class="loader">
+            </div>
+        </div>
+            {% if user.is_authenticated %}
+                <form method = "post" enctype="multipart/form-data">
+
+                    <tr>
+                        <table class="img_table table-striped container-fluid table-responsive-lx">
+                            <thead calss="table-light">
+                                <tr>
+                                  <th scope="col">Picture</th>
+                                  <th scope="col">Users</th>
+                                  <th scope="col">Description</th>
+                                  <th scope="col">Password</th>
+                                  <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            {% for one_of_Uploade_used in Uploade_used %}
+                                <td>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">{{ one_of_Uploade_used.original_img }}</th>
+                                            <td> {{ one_of_Uploade_used.user_id }}</td>
+                                            <td> {{ one_of_Uploade_used.descript }}</td>
+                                            {% if user.is_staff %}
+                                                <td>{{ one_of_Uploade_used.password }}</td>
+                                            {% endif %}
+                                            <td>{{ one_of_Uploade_used.date }}</td>
+                                            <!-- <img src="{{ one_of_Uploade_used.original_img.url }}" alt="" width="100px"> -->
+
+                                            <!-- if 按了之後要進行embedding 再download embedding後的圖片-->
+                                            <!-- <button type="button" class="download-button" data-url="{{ one_of_Uploade_used.original_img.url }}">下载图片</button> -->
+                                            <button type="button" class="download-button" data-image-id="{{ one_of_Uploade_used.id }}" data-url="{{ one_of_Uploade_used.original_img.url }}">下载图片</button>
+                                            {% if user.is_staff %}
+                                                <td><button class="delete-button" data-image-id="{{ one_of_Uploade_used.id }}" data-url="{{ one_of_Uploade_used.original_img.url }}" onclick="confirmDelete(this)">删除图片</button></td>
+                                            {% endif %}
+                                        </tr>
+                                    </tbody>   
+                                </td>
+                            {% endfor %}
+                        </table>
+                    </tr>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                <button type="submit">Upload</button>
+                <a class="btn btn-primary btn-lg" href="{% url 'logout' %}" role="button">Logout</a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Sign in</a>
+            {% endif %}
+        </p>
+    </div>
+
+
+
+{% endblock content %}
+
+
+
+
